@@ -1,0 +1,36 @@
+{
+	"name": "ihr-components-nextjs-starter",
+	"version": "1.0.0",
+	"description": "Components starter repository ",
+	"main": "pages/index.js",
+	"repository": "https://github.com/shreyvijayvargiya/ihr-components-nextjs-starter",
+	"author": "iHateReading",
+	"license": "MIT",
+	"private": true,
+	"engines": {
+		"node": ">=20.x"
+	},
+	"scripts": {
+		"dev": "next",
+		"clean": "npm cache clean",
+		"build": "next build"
+	},
+	"dependencies": {
+		"autoprefixer": "^10.4.20",
+		"class-variance-authority": "^0.7.1",
+		"clsx": "^2.1.1",
+		"framer-motion": "^12.6.2",
+		"gsap": "^3.12.7",
+		"lucide-react": "^0.474.0",
+		"next": "^15.1.7",
+		"postcss": "^8.5.1",
+		"react": "^19.0.0",
+		"react-dom": "^19.0.0",
+		"react-icons": "^5.4.0",
+		"react-toastify": "^11.0.3",
+		"tailwind-merge": "^3.0.1",
+		"tailwindcss": "^3.4.17",
+		"tailwindcss-animate": "^1.0.7",
+		"uuid": "^11.0.5"
+	}
+}
