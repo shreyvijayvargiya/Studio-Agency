@@ -265,6 +265,7 @@ const Home = () => {
 		const elementPosition = element.getBoundingClientRect().top;
 		const offsetPosition = elementPosition + window.scrollY - navbarHeight;
 
+		setIsMenuOpen(false);
 		// Use native smooth scrolling
 		window.scrollTo({
 			top: offsetPosition,
@@ -311,66 +312,67 @@ const Home = () => {
 				{/* Navbar */}
 				<nav className="">
 					<div
-						className={`fixed top-0.5 md:left-1/2 md:-translate-x-1/2 left-0 right-0 w-auto md:rounded-xl py-4 z-50 transition-all duration-300 ease-out ${
+						className={`fixed top-0 left-0 right-0 w-full xl:left-1/2 xl:-translate-x-1/2 xl:w-auto xl:max-w-5xl lg:max-w-7xl py-4 z-50 transition-all duration-300 ease-out ${
 							isScrolled
-								? "max-w-5xl bg-white backdrop-blur-sm"
-								: "max-w-7xl bg-none backdrop-blur-sm"
+								? "bg-white backdrop-blur-sm md:rounded-xl"
+								: "bg-none backdrop-blur-sm"
 						} `}
 					>
-						<div className="mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between ">
+						<div className="relative mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between ">
 							{/* Logo */}
-							<div className="flex-shrink-0">
-								<a href="/" className="md:text-xl text-md font-bold">
+							<div className="flex-shrink-0 md:gap-0 sm:gap-4 flex items-center">
+								{/* Navigation Links */}
+								<div className="">
+									{isMenuOpen ? (
+										<X
+											className="md:hidden"
+											onClick={() => setIsMenuOpen(!isMenuOpen)}
+										/>
+									) : (
+										<MenuIcon
+											className="md:hidden text-zinc-800"
+											onClick={() => setIsMenuOpen(!isMenuOpen)}
+										/>
+									)}
+									{isMenuOpen && (
+										<motion.div
+											initial={{ opacity: 0, y: -40 }}
+											animate={{ opacity: 1, y: 0 }}
+											exit={{ opacity: 0, y: -10 }}
+											transition={{ duration: 0.3 }}
+											className="absolute top-10 left-0 right-0 w-full mx-auto bg-white shadow-lg rounded-xl flex flex-col gap-4 py-4"
+										>
+											{navigationLinks.map((link, index) => (
+												<button
+													key={index}
+													onClick={() =>
+														scrollToSection(getRefByName(link.ref))
+													}
+													className="text-zinc-800 hover:text-black px-3 py-2 md:text-sm text-xs font-medium"
+												>
+													{link.name}
+												</button>
+											))}
+										</motion.div>
+									)}
+								</div>
+								<a href="/" className="md:text-xl text-lg font-bold">
 									Studio
 								</a>
 							</div>
 
 							{/* Navigation Links */}
-							<div className="relative">
-								{isMenuOpen ? (
-									<X
-										className="md:hidden"
-										onClick={() => setIsMenuOpen(!isMenuOpen)}
-									/>
-								) : (
-									<MenuIcon
-										className="md:hidden"
-										onClick={() => setIsMenuOpen(!isMenuOpen)}
-									/>
-								)}
-								{isMenuOpen && (
-									<motion.div
-										initial={{ opacity: 0, y: 40 }}
-										animate={{ opacity: 1, y: 0 }}
-										exit={{ opacity: 0, y: -10 }}
-										transition={{ duration: 0.3 }}
-										className="absolute top-8 -left-20 mx-auto w-48 bg-white shadow-lg rounded-xl p-4 flex flex-col gap-4"
+							<div className="hidden md:flex md:ml-10 items-center space-x-2">
+								{navigationLinks.map((link, index) => (
+									<button
+										key={index}
+										onClick={() => scrollToSection(getRefByName(link.ref))}
+										className="text-zinc-800 hover:text-black px-3 py-2 md:text-sm text-xs font-medium"
 									>
-										{navigationLinks.map((link, index) => (
-											<button
-												key={index}
-												onClick={() => scrollToSection(getRefByName(link.ref))}
-												className="text-zinc-800 hover:text-black px-3 py-2 md:text-sm text-xs font-medium"
-											>
-												{link.name}
-											</button>
-										))}
-									</motion.div>
-								)}
-
-								<div className="hidden md:flex md:ml-10 items-center space-x-2">
-									{navigationLinks.map((link, index) => (
-										<button
-											key={index}
-											onClick={() => scrollToSection(getRefByName(link.ref))}
-											className="text-zinc-800 hover:text-black px-3 py-2 md:text-sm text-xs font-medium"
-										>
-											{link.name}
-										</button>
-									))}
-								</div>
+										{link.name}
+									</button>
+								))}
 							</div>
-
 							{/* Connect Button */}
 							<button
 								onClick={() => scrollToSection(contactRef)}
@@ -386,14 +388,16 @@ const Home = () => {
 				{/* Hero Section */}
 				<section ref={heroRef} className="scroll-item">
 					<div className="flex items-center justify-center p-8">
-						<div className="max-w-7xl mx-auto text-center space-y-10">
+						<div className="md:max-w-7xl mx-auto text-center space-y-10">
 							<motion.h1
 								initial={{ opacity: 0, y: 20 }}
 								animate={{ opacity: 1, y: 0 }}
 								className="text-6xl mb-6 max-w-4xl mx-auto"
 							>
 								<div className="flex items-center justify-center gap-10 font-bold text-5xl flex-wrap">
-									<p className="text-[5rem] font-medium">Development</p>
+									<p className="md:text-[5rem] text-[3rem] font-medium">
+										Development
+									</p>
 									<div className="flex items-center flex-col gap-2 ring-2 h-24 bg-zinc-900 text-white ring-zinc-800 rounded-xl p-2 overflow-hidden">
 										<motion.div
 											animate={{
@@ -410,7 +414,7 @@ const Home = () => {
 												],
 											}}
 											transition={{
-												duration: 8,
+												duration: 40,
 												repeat: Infinity,
 												ease: "linear",
 											}}
@@ -430,8 +434,12 @@ const Home = () => {
 											})}
 										</motion.div>
 									</div>
-									<p className="text-[4rem] font-light text-zinc-800">Studio</p>
-									<p className="text-[4rem] font-medium">for small</p>
+									<p className="md:text-[4rem] text-[3rem] font-light text-zinc-800">
+										Studio
+									</p>
+									<p className="md:text-[4rem] text-[3rem] font-medium">
+										for small
+									</p>
 									<div className="relative w-32 h-16 overflow-hidden ring-2 ring-zinc-800 bg-zinc-900 text-white rounded-xl p-2 flex flex-col items-center justify-center ">
 										<motion.div
 											className="flex items-center gap-2"
@@ -439,7 +447,7 @@ const Home = () => {
 												x: ["0", "-10px", "-20px", "-30px", "-40px", "-50px"],
 											}}
 											transition={{
-												duration: 8,
+												duration: 20,
 												repeat: Infinity,
 												delay: 1,
 												ease: "linear",
@@ -456,7 +464,7 @@ const Home = () => {
 											<StarIcon size={32} />
 										</motion.div>
 									</div>
-									<p className="text-[4rem] font-light text-zinc-600">
+									<p className="md:text-[4rem] text-[3rem] font-light text-zinc-600">
 										Startups
 									</p>
 								</div>
@@ -470,7 +478,7 @@ const Home = () => {
 								We transform ideas into powerful digital solutions that drive
 								growth and innovation
 							</motion.p>
-							<div className="flex items-center justify-center gap-10">
+							<div className="flex items-center justify-center gap-10 flex-wrap ">
 								<motion.button
 									initial={{ opacity: 0, y: 20 }}
 									animate={{ opacity: 1, y: 0 }}
@@ -532,8 +540,8 @@ const Home = () => {
 					</div>
 				</section>
 
-				<section>
-					<div className="my-20 group relative max-w-7xl mx-auto">
+				<section className="p-8">
+					<div className="my-10 group relative max-w-7xl mx-auto">
 						<video
 							src="/demo-video.mp4"
 							alt="hero"
@@ -547,13 +555,13 @@ const Home = () => {
 				{/* Introduction Section */}
 				<section ref={introRef} className="scroll-item">
 					<div className="w-full">
-						<div className="max-w-6xl mx-auto px-8">
-							<div className="flex justify-center items-center mb-4">
-								<div className="w-40 h-0.5 bg-gradient-to-r to-zinc-200 via-zinc-100 from-white" />
-								<p className="text-zinc-500 mx-4 font-mono text-sm italic">
+						<div className="md:max-w-6xl mx-auto md:px-8">
+							<div className="flex justify-center items-center mb-4 gap-4">
+								<div className="md:w-40 w-16 h-0.5 bg-gradient-to-r to-zinc-200 via-zinc-100 from-white" />
+								<p className="text-zinc-500 font-mono text-sm italic">
 									see how we work
 								</p>
-								<div className="w-40 h-0.5 bg-gradient-to-r from-zinc-200 via-zinc-100 to-white" />
+								<div className="md:w-40 w-16 h-0.5 bg-gradient-to-r from-zinc-200 via-zinc-100 to-white" />
 							</div>
 							<h3 className="text-4xl font-light mb-4 text-center">
 								3 Step process
@@ -619,12 +627,12 @@ const Home = () => {
 				{/* Trusted Companies Container */}
 				<section className="scroll-item">
 					<div className="overflow-hidden my-20 max-w-7xl mx-auto">
-						<div className="flex justify-center items-center mb-4">
-							<div className="w-40 h-0.5 bg-gradient-to-r to-zinc-200 via-zinc-100 from-white" />
-							<p className="text-zinc-500 mx-4 font-mono text-sm italic">
+						<div className="flex justify-center items-center mb-4 gap-4">
+							<div className="md:w-40 w-16 h-0.5 bg-gradient-to-r to-zinc-200 via-zinc-100 from-white" />
+							<p className="text-zinc-500 font-mono text-sm italic">
 								Trusted by
 							</p>
-							<div className="w-40 h-0.5 bg-gradient-to-r from-zinc-200 via-zinc-100 to-white" />
+							<div className="md:w-40 w-16 h-0.5 bg-gradient-to-r from-zinc-200 via-zinc-100 to-white" />
 						</div>
 						<motion.div
 							ref={scrollContainerRef}
@@ -660,20 +668,20 @@ const Home = () => {
 
 				{/* Recent Projects */}
 				<section ref={projectsRef} className="scroll-item">
-					<div className="max-w-7xl mx-auto px-8 relative z-10">
-						<div className="flex justify-center items-center mb-4">
-							<div className="w-40 h-0.5 bg-gradient-to-r to-zinc-200 via-zinc-100 from-white" />
-							<p className="text-zinc-500 mx-4 font-mono text-sm italic">
+					<div className="max-w-7xl mx-auto relative z-10">
+						<div className="flex justify-center items-center mb-4 gap-4">
+							<div className="md:w-40 w-16 h-0.5 bg-gradient-to-r to-zinc-200 via-zinc-100 from-white" />
+							<p className="text-zinc-500 font-mono text-sm italic">
 								Our projects
 							</p>
-							<div className="w-40 h-0.5 bg-gradient-to-r from-zinc-200 via-zinc-100 to-white" />
+							<div className="md:w-40 w-16 h-0.5 bg-gradient-to-r from-zinc-200 via-zinc-100 to-white" />
 						</div>
 						<h2 className="text-4xl font-light text mb-20 text-center">
 							Recent Projects
 						</h2>
 
 						{/* Original Grid Layout */}
-						<div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+						<div className="grid grid-cols-1 md:grid-cols-2 gap-8 px-8">
 							{projects.slice(0, 4).map((project, index) => (
 								<div key={index}>
 									<motion.div
@@ -687,7 +695,7 @@ const Home = () => {
 										<img
 											src={project.image}
 											alt={project.title}
-											className="w-full h-[36rem] object-cover rounded-xl group-hover:translate-y-1 transition-all duration-300 ease-in"
+											className="w-full md:h-[36rem] h-auto object-cover rounded-xl group-hover:translate-y-1 transition-all duration-300 ease-in"
 										/>
 									</motion.div>
 									<p className="text-xl text-zinc-400 my-4 text-center">
@@ -926,22 +934,24 @@ const Home = () => {
 
 				{/* Pricing Section */}
 				<section ref={pricingRef} className="scroll-item">
-					<div className="max-w-6xl mx-auto px-8">
-						<div className="flex justify-center items-center mb-4">
+					<div className="max-w-6xl mx-auto">
+						<div className="flex justify-center items-center mb-4 gap-4">
 							<div className="w-40 h-0.5 bg-gradient-to-r to-zinc-200 via-zinc-100 from-white" />
 							<p className="text-zinc-500 mx-4 font-mono text-sm italic">
 								Pricing
 							</p>
 							<div className="w-40 h-0.5 bg-gradient-to-r from-zinc-200 via-zinc-100 to-white" />
 						</div>
-						<h2 className="text-4xl mb-20 text-center">Book Your Project</h2>
+						<h2 className="md:text-4xl text-2xl mb-20 text-center">
+							Book Your Project
+						</h2>
 						<motion.div
-							initial={{ skewX: 2 }}
-							whileInView={{ skewX: 0, scale: 1.05 }}
+							initial={{ opacity: 0.5 }}
+							whileInView={{ opacity: 1 }}
 							transition={{ duration: 0.3, ease: "easeInOut" }}
-							className="grid grid-cols-1 md:grid-cols-3 gap-8 rounded-2xl ring-8 ring-zinc-100/50 shadow-2xl bg-white p-10"
+							className="grid grid-cols-1 md:grid-cols-3 gap-8 rounded-2xl ring-8 ring-zinc-100/50 shadow-2xl bg-white md:p-10 mx-4"
 						>
-							<div className="p-8 hover:bg-zinc-50/50 hover:scale-105 transition-all duration-300 ease-in-out rounded-xl">
+							<div className="md:p-8 p-4 hover:bg-zinc-50/50 hover:scale-105 transition-all duration-300 ease-in-out rounded-xl">
 								<h3 className="text-2xl font-bold mb-4">Basic</h3>
 								<p className="text-3xl font-bold mb-4">$2,999</p>
 								<ul className="text-left mb-8 space-y-4">
@@ -954,7 +964,7 @@ const Home = () => {
 									Get Started
 								</button>
 							</div>
-							<div className="p-8 bg-zinc-50/50 hover:bg-zinc-50/50 hover:scale-105 transition-all duration-300 ease-in-out rounded-xl">
+							<div className="md:p-8 p-4 bg-zinc-50/50 hover:bg-zinc-50/50 hover:scale-105 transition-all duration-300 ease-in-out rounded-xl">
 								<h3 className="text-2xl font-bold mb-4">Professional</h3>
 								<p className="text-3xl font-bold mb-4">$4,999</p>
 								<ul className="text-left mb-8 space-y-4">
@@ -967,7 +977,7 @@ const Home = () => {
 									Get Started
 								</button>
 							</div>
-							<div className="p-8 hover:bg-zinc-50/50 hover:scale-105 transition-all duration-300 ease-in-out rounded-xl">
+							<div className="md:p-8 p-4 hover:bg-zinc-50/50 hover:scale-105 transition-all duration-300 ease-in-out rounded-xl">
 								<h3 className="text-2xl font-bold mb-4">Enterprise</h3>
 								<p className="text-3xl font-bold mb-4">$9,999</p>
 								<ul className="text-left mb-8 space-y-4">
@@ -994,10 +1004,10 @@ const Home = () => {
 							</p>
 							<div className="w-40 h-0.5 bg-gradient-to-r from-zinc-200 via-zinc-100 to-white" />
 						</div>
-						<h2 className="text-4xl font-light mb-20 text-center">
+						<h2 className="md:text-4xl text-2xl font-light text-center">
 							Contact Us
 						</h2>
-						<div className="grid grid-cols-1 md:grid-cols-2 justify-between items-start gap-10 py-10">
+						<div className="grid grid-cols-1 md:grid-cols-2 justify-between items-start md:gap-10 gap-20 py-10">
 							<div className="space-y-4 max-w-lg">
 								<p className="text-zinc-600 italic text-lg">
 									"Working with this team was an absolute pleasure. They
@@ -1016,7 +1026,7 @@ const Home = () => {
 									</div>
 								</div>
 							</div>
-							<form className="space-y-6 border-l border-zinc-200 pl-10">
+							<form className="space-y-6 md:border-l md:border-zinc-200 md:pl-10">
 								<div>
 									<input
 										type="text"
@@ -1048,19 +1058,19 @@ const Home = () => {
 
 				{/* FAQs */}
 				<section ref={faqRef} className="scroll-item">
-					<div className="max-w-7xl mx-auto px-8">
-						<div className="flex justify-center items-center mb-4">
-							<div className="w-40 h-0.5 bg-gradient-to-r to-zinc-200 via-zinc-100 from-white" />
-							<p className="text-zinc-500 mx-4 font-mono text-sm italic">
+					<div className="md:max-w-7xl mx-auto">
+						<div className="flex justify-center items-center mb-4 gap-4">
+							<div className="md:w-40 w-16 h-0.5 bg-gradient-to-r to-zinc-200 via-zinc-100 from-white" />
+							<p className="text-zinc-500 font-mono text-sm italic">
 								Answers to your questions
 							</p>
-							<div className="w-40 h-0.5 bg-gradient-to-r from-zinc-200 via-zinc-100 to-white" />
+							<div className="md:w-40 w-16 h-0.5 bg-gradient-to-r from-zinc-200 via-zinc-100 to-white" />
 						</div>
-						<h2 className="text-4xl font-light font-sans mb-20 text-center">
+						<h2 className="md:text-4xl text-2xl font-light font-sans md:mb-20 mb-10 text-center">
 							Frequently Asked Questions
 						</h2>
-						<div className="flex flex-col justify-between items-start md:flex-row gap-10">
-							<div className="p-10 ring-4 ring-zinc-200 hover:shadow-3xl transition-all duration-300 ease-in rounded-xl bg-white max-w-md skew-x-4 shadow-2xl">
+						<div className="grid grid-cols-1 md:grid-cols-2 gap-10 px-4 sm:px-6 md:px-8 py-10">
+							<div className="p-10 ring-4 ring-zinc-200 hover:shadow-3xl h-fit transition-all duration-300 ease-in rounded-xl bg-white md:max-w-md w-full skew-x-4 shadow-2xl order-2 md:order-1">
 								<div className="flex items-center justify-start gap-10 mb-20">
 									<img
 										src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e"
@@ -1080,7 +1090,7 @@ const Home = () => {
 									<div className="absolute inset-0 bg-gradient-to-r from-zinc-800 via-zinc-700 to-zinc-800 opacity-0 group-hover:opacity-100 transition-opacity duration-500 animate-gradient-x"></div>
 								</button>
 							</div>
-							<div className="space-y-4 flex-1">
+							<div className="space-y-4 flex-1 order-1 md:order-2">
 								{faqs.map((faq, index) => (
 									<details
 										key={index}
@@ -1099,7 +1109,7 @@ const Home = () => {
 				</section>
 
 				{/* Let's Connect */}
-				<section className="scroll-item py-20 bg-black shadow-2xl ring-8 ring-zinc-200/50 border-t-[1rem] border-zinc-200 text-white rounded-t-[5rem] relative overflow-hidden inset-0">
+				<section className="scroll-item py-20 bg-black shadow-2xl ring-8 ring-zinc-200/50 md:border-t-[1rem] border-t-[0.5rem] border-zinc-200 text-white md:rounded-t-[5rem] rounded-t-[2rem] relative overflow-hidden inset-0">
 					<div
 						className="absolute inset-0 opacity-20"
 						style={{
@@ -1123,7 +1133,7 @@ const Home = () => {
 								initial={{ opacity: 0, scale: 0.8 }}
 								whileInView={{ opacity: 1, scale: 1, y: 0 }}
 								transition={{ duration: 0.8, ease: "easeOut" }}
-								className="group md:text-[8rem] text-7xl font-serif font-extrabold md:my-20 animate-in hover:animate-none transition-all duration-300 ease-in"
+								className="group md:text-[8rem] text-5xl font-serif font-extrabold md:my-20 animate-in hover:animate-none transition-all duration-300 ease-in"
 							>
 								Let's Connect
 							</motion.h2>
